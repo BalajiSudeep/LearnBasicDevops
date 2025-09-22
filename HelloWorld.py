@@ -1,1 +1,1 @@
-print('Test this in EC2')
+print('Hello CI/CD')
