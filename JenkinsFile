@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = "MyDemoApp"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building ${APP_NAME}"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo "Running tests for ${APP_NAME}"
+                sh 'python3 --version'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying ${APP_NAME}"
+            }
+        }
+    }
+}
