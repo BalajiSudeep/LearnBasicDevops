@@ -1,1 +1,1 @@
-print('Ee sala cum namdu')
+print('Ee sala cup namdu')
