@@ -2,27 +2,61 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "MyDemoApp"
+        IMAGE_NAME = "balajisudeep/python-app"
+        CONTAINER_NAME = "python-app"
     }
 
     stages {
-        stage('Build') {
+
+        stage('Checkout') {
             steps {
-                echo "Building ${APP_NAME}"
+                git branch: 'main', url: 'https://github.com/BalajiSudeep/LearnBasicDevops.git'
             }
         }
 
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                echo "Running tests for ${APP_NAME}"
-                sh 'python3 --version'
+                script {
+                    // Build Docker image
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Run Container') {
             steps {
-                echo "Deploying ${APP_NAME}"
+                script {
+                    // Stop container if exists
+                    sh "docker rm -f ${CONTAINER_NAME} || true"
+                    // Run container
+                    sh "docker run -d --name ${CONTAINER_NAME} -p 5000:5000 ${IMAGE_NAME}"
+                }
             }
+        }
+
+        stage('Test Application') {
+            steps {
+                script {
+                    // Example: check if app is running
+                    sh "docker ps | grep ${CONTAINER_NAME}"
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Optional: remove container/image if you want
+                    // sh "docker rm -f ${CONTAINER_NAME}"
+                    // sh "docker rmi ${IMAGE_NAME}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline execution finished."
         }
     }
 }
